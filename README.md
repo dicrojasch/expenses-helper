@@ -41,8 +41,9 @@ A Python-based API designed to process expense transactions sent via text or aud
 
 ## 🔐 Authentication (BudgetBakers)
 
-To enable synchronization, you must manually provide session headers in `staging_transactions/budgetbakers_sync/cookies.json`:
+To enable synchronization, you must manually provide session headers in `config/cookies.json`:
 
+1.  Open `config/cookies.json` (created automatically on first run if missing).
 ```json
 {
     "cookie_header": "your_full_cookie_string",
