@@ -41,7 +41,7 @@ A Python-based API designed to process expense transactions sent via text or aud
 
 Start the FastAPI server:
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn staging_transactions.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ## 📡 API Endpoints

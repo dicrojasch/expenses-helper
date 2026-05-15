@@ -3,5 +3,5 @@ uvicorn
 python-multipart
 faster-whisper
 rapidfuzz
-google-generativeai
+google-genai
 pydantic
