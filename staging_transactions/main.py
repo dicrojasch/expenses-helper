@@ -45,6 +45,7 @@ def process_and_store_transactions(text: str) -> dict:
                 "description": desc,
                 "category": category_data["category"],
                 "budgetbakers_category_id": category_data["budgetbakers_category_id"],
+                "budgetbakers_account_id": category_data["budgetbakers_account_id"],
             }
         )
 
@@ -55,14 +56,15 @@ def process_and_store_transactions(text: str) -> dict:
         for res in results:
             cursor.execute(
                 """
-                INSERT INTO transactions_staging (amount, description, category, budgetbakers_category_id)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO transactions_staging (amount, description, category, budgetbakers_category_id, budgetbakers_account_id)
+                VALUES (?, ?, ?, ?, ?)
                 """,
                 (
                     res["amount"],
                     res["description"],
                     res["category"],
                     res["budgetbakers_category_id"],
+                    res["budgetbakers_account_id"],
                 ),
             )
         conn.commit()
@@ -74,11 +76,11 @@ def process_and_store_transactions(text: str) -> dict:
     for res in results:
         try:
             bb_payload = {
-                "accountId": BB_DEFAULT_ACCOUNT_ID,
+                "accountId": res["budgetbakers_account_id"],
                 "categoryId": res["budgetbakers_category_id"],
                 "amount": res["amount"],
                 "currencyId": BB_DEFAULT_CURRENCY_ID,
-                "payee": "asdfasdfasd",  # res["description"][:50], # BudgetBakers might have payee limits
+                # TODO: Change this when we have a better way to get the payee    "payee": "user input"
                 "note": f"{res['description']}\nAuto-categorized as: {res['category']}",
             }
             success = upload_transaction(bb_payload)

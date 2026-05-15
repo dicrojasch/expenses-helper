@@ -14,8 +14,9 @@ pip install playwright && playwright install chromium
 
 ### Step 1: Set Authentication Cookies
 Since you are managing cookies manually:
-1. Open `staging_transactions/budgetbakers_sync/cookies.json`.
-2. Update the `"cookie_header"` field with your raw cookie string (e.g., `name=value; name2=value2`).
+1. Open `config/cookies.json`.
+2. Paste the `cookie` header value into `cookie_header`.
+3. Paste the `authorization` header value into `auth_header`.
 3. You can get this string from your browser's Developer Tools (F12 > Network > Headers > Cookie).
 
 ### Step 2: Upload Transactions

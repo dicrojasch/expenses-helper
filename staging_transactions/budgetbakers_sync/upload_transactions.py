@@ -9,9 +9,9 @@ from datetime import datetime, timezone
 # Note: The owner ID in the URL should match your reservedOwnerId
 OWNER_ID = "8eef2fc9-8b90-4aa7-a4fb-cf2381b7a445"
 API_URL = f"https://couch-prod-us-1.budgetbakers.com/bb-{OWNER_ID}/_bulk_docs"
-# Use absolute path for the cookies file relative to this script
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-COOKIES_FILE = os.path.join(SCRIPT_DIR, "cookies.json")
+# Use absolute path for the cookies file relative to the project root
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+COOKIES_FILE = os.path.join(ROOT_DIR, "config", "cookies.json")
 
 
 def load_credentials():
@@ -39,7 +39,7 @@ def upload_transaction(payload):
     
     if not cookie_header or not auth_header:
         print("\n[ERROR] Missing authentication credentials.")
-        print("Please manually update 'cookies.json' with 'cookie_header' and 'auth_header'.")
+        print("Please manually update 'config/cookies.json' with 'cookie_header' and 'auth_header'.")
         return False
 
     headers = {
@@ -103,7 +103,7 @@ def upload_transaction(payload):
         
         if response.status_code in [401, 403]:
             print("\n[WARNING] Authentication expired or invalid.")
-            print("Please update your 'auth_header' and 'cookie_header' in 'cookies.json'.")
+            print("Please update your 'auth_header' and 'cookie_header' in 'config/cookies.json'.")
             return False
             
         response.raise_for_status()

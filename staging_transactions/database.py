@@ -34,6 +34,7 @@ def init_db():
         description TEXT NOT NULL,
         category TEXT NOT NULL,
         budgetbakers_category_id TEXT NOT NULL,
+        budgetbakers_account_id TEXT,
         status TEXT DEFAULT 'pending',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )

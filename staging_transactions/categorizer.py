@@ -10,19 +10,38 @@ client = None
 if GENAI_API_KEY:
     client = genai.Client(api_key=GENAI_API_KEY)
 
-# Load category map from JSON file
-# Use absolute path relative to this file to ensure it's found
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-JSON_PATH = os.path.join(CURRENT_DIR, "category_map.json")
+# Load category and account maps from JSON files
+# Config files are now located in the root 'config/' folder
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CATEGORY_JSON_PATH = os.path.join(ROOT_DIR, "config", "category_map.json")
+ACCOUNTS_JSON_PATH = os.path.join(ROOT_DIR, "config", "accounts_map.json")
 
 try:
-    with open(JSON_PATH, "r", encoding="utf-8") as f:
+    with open(CATEGORY_JSON_PATH, "r", encoding="utf-8") as f:
         CATEGORY_ID_MAP = json.load(f)
 except Exception as e:
     print(f"Error loading category_map.json: {e}")
     CATEGORY_ID_MAP = {}
 
+try:
+    with open(ACCOUNTS_JSON_PATH, "r", encoding="utf-8") as f:
+        ACCOUNTS_MAP = json.load(f)
+except Exception as e:
+    print(f"Error loading accounts_map.json: {e}")
+    ACCOUNTS_MAP = {}
+
 DEFAULT_CATEGORY_ID = "00b4a7be-01a9-44f5-ba87-4745411d819d"
+DEFAULT_ACCOUNT_ID = "55e461be-cf71-49a1-9b1c-2c436f3ba29c"
+
+
+def get_account_id(description: str) -> str:
+    """Helper to detect account ID from description keywords."""
+    desc_lower = description.lower()
+    for keyword, acc_id in ACCOUNTS_MAP.items():
+        if keyword.lower() in desc_lower:
+            return acc_id
+    return DEFAULT_ACCOUNT_ID
+
 
 
 def get_category_from_db(description: str) -> dict | None:
@@ -128,13 +147,15 @@ def determine_category(description: str) -> dict:
     """Main categorizer function implementing the 3 priority levels."""
     # Level 1
     result = get_category_from_db(description)
-    if result:
-        return result
+    if not result:
+        # Level 2
+        result = get_category_fuzzy(description)
+    
+    if not result:
+        # Level 3
+        result = get_category_gemini(description)
 
-    # Level 2
-    result = get_category_fuzzy(description)
-    if result:
-        return result
-
-    # Level 3
-    return get_category_gemini(description)
+    # Add account detection
+    result["budgetbakers_account_id"] = get_account_id(description)
+    
+    return result
