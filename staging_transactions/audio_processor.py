@@ -25,8 +25,13 @@ def transcribe_audio(file_bytes: bytes, filename: str) -> str:
 
     try:
         whisper_model = get_model()
-        prompt = "25000 café en efectivo15000 almuerzo con tarjeta de credito nu bank 5000 \
-           taxi con tarjeta de credito cenco 12500 gasolina con cuenta ahorros 20000 consulta medica con nequi"
+        prompt = "25000 café en efectivo \
+            15000 almuerzo con tarjeta de credito davivienda \
+            5000 taxi con tarjeta de credito nu bank \
+            12500 gasolina con nequi \
+            20000 consulta medica con caja social diego \
+            20000 consulta medica con caja social cate \
+            20000 desayuno con tarjeta de credito cencosud"
         segments, info = whisper_model.transcribe(
             tmp_path,
             beam_size=5,
