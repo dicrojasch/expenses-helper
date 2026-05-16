@@ -7,7 +7,7 @@ This module automates transaction uploads to BudgetBakers (Wallet) by reverse-en
 To use this module, run:
 
 ```bash
-pip install playwright && playwright install chromium
+pip install -r requirements.txt
 ```
 
 ## 2. Workflow

@@ -23,14 +23,13 @@ A Python-based API designed to process expense transactions sent via text or aud
 
 2. **Create a virtual environment**:
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
 3. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
-   pip install playwright && playwright install chromium
    ```
 
 4. **Configure Environment Variables**:
@@ -73,6 +72,46 @@ Receives an audio file (form-data).
 
 - `category_mapping`: Stores `description` -> `category` and `budgetbakers_category_id`.
 - `transactions_staging`: Stores processed transactions including the UUID for sync.
+
+## 🚀 Deployment (Linux systemd)
+
+To run the API as a background service on Linux, create a systemd service file:
+
+1. **Create the service file**:
+   ```bash
+   sudo nano /etc/systemd/system/expenses-helper.service
+   ```
+
+2. **Paste the following configuration** (adjust paths and user as needed):
+   ```ini
+   [Unit]
+   Description=Expenses Helper API
+   After=network.target
+
+   [Service]
+   User=diego
+   Group=diego
+   WorkingDirectory=/home/diego/repos/expenses-helper
+   Environment="PATH=/home/diego/repos/expenses-helper/.venv/bin"
+   EnvironmentFile=/home/diego/repos/expenses-helper/.env
+   ExecStart=/home/diego/repos/expenses-helper/.venv/bin/uvicorn staging_transactions.main:app --host 0.0.0.0 --port 8000
+
+   [Install]
+   WantedBy=multi-user.target
+   ```
+
+3. **Reload systemd and start the service**:
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl enable expenses-helper
+   sudo systemctl start expenses-helper
+   ```
+
+4. **Check status and logs**:
+   ```bash
+   sudo systemctl status expenses-helper
+   journalctl -u expenses-helper -f
+   ```
 
 ## 📝 License
 
