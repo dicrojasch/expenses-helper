@@ -9,7 +9,7 @@ def parse_transactions(text: str) -> list[dict]:
     # Regex to capture amount and description
     # Matches a number (with dots/commas) followed by '-' and then captures everything
     # until it finds a comma followed by another number and '-' or end of string.
-    pattern = r"([\d.,]+)\s+([a-zñáéíóú\s]+?)(?=\s*,\s*|$)"
+    pattern = r"([\d.,]+)\s+([a-zñáéíóú\d\s]+?)(?=\s+[\d.,]+|$)"
 
     matches = re.findall(pattern, text)
 
